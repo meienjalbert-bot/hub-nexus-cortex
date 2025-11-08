@@ -1,0 +1,13 @@
+qps_peak: 10
+qps_low: 2
+cpu_high_pct: 80
+cpu_low_pct: 25
+limits:
+  max_total_workers: 8
+roles:
+  analyst: {min: 1, max: 3}
+  researcher: {min: 1, max: 3}
+  conductor: {min: 1, max: 2}
+preload_models:
+  base: ["llama3.2:3b-instruct-q4_K_M"]
+  peak: ["llama3.2:3b-instruct-q4_K_M", "mistral:7b-instruct-q4"]

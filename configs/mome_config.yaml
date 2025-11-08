@@ -1,0 +1,9 @@
+rrf_k: 60
+weights:
+  lexical: 1.0
+  semantic: 1.3
+  graph: 0.8
+query_heuristics:
+  short_query_threshold: 4
+  boost_lexical_on_short: 0.3
+  boost_semantic_on_long: 0.3

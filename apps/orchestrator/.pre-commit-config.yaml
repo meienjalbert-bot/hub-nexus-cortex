@@ -1,0 +1,12 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.7
+    hooks:
+      - id: ruff
+        args: ["--fix"]     # lint + auto-fix
+      - id: ruff-format     # formateur Ruff (remplace black/isort)
+  # Optionnel si tu préfères garder Black :
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black

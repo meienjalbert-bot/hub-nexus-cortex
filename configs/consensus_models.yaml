@@ -1,21 +1,41 @@
-committee:
-  - role: analyst
-    model: "llama3.2:3b-instruct-q4_K_M"
-    temperature: 0.1
-    max_tokens: 256
-    timeout_s: 8
-  - role: creative
-    model: "mistral:7b-instruct-q4"
-    temperature: 0.6
-    max_tokens: 256
-    timeout_s: 12
-  - role: coder
-    model: "codellama:7b-instruct-q4"
-    temperature: 0.2
-    max_tokens: 256
-    timeout_s: 12
+# configs/consensus_models.yaml
+modes:
+  interactive:
+    soft_deadline_s: 6
+    hard_deadline_s: 10
+    grace_s: 3
+    require_heavy: false
+    committee:
+      - role: analyst
+        model: qwen2.5-vl-7b-instruct:q4_k_m
+        temperature: 0.2
+        max_tokens: 160
+        timeout_s: 8
+      - role: creative
+        model: qwen2.5-vl-7b-instruct:q4_k_m
+        temperature: 0.35
+        max_tokens: 140
+        timeout_s: 8
+
+  precision:
+    soft_deadline_s: 14
+    hard_deadline_s: 28
+    grace_s: 6
+    require_heavy: true     # ✅ 32B obligatoire
+    committee:
+      - role: sage
+        model: qwen32b_local
+        temperature: 0.10
+        top_p: 0.9
+        repetition_penalty: 1.05
+        max_tokens: 260
+        timeout_s: 24
+
 conductor:
-  model: "llama3.1:8b-instruct-q4"
-  temperature: 0.2
-  max_tokens: 384
-  timeout_s: 12
+  model: qwen2.5-vl-7b-instruct:q4_k_m
+  temperature: 0.18
+  max_tokens: 256
+  system: >
+    Mode précision : respecte strictement le Contexte projet.
+    Si des sources sont fournies, cite-les. N'invente pas d'acronymes.
+

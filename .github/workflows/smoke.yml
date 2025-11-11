@@ -1,0 +1,21 @@
+---
+name: Smoke (cortex deps+cortex)
+on: {push: {branches: [main]}, pull_request: {branches: [main]}}
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare env
+        run: mkdir -p configs && cp configs/.env.example configs/.env || true
+      - name: Compose up deps+cortex
+        run: docker compose --profile deps up -d qdrant meili && docker compose up -d cortex
+      - name: Wait Qdrant /readyz
+        run: bash scripts/wait-for-http.sh http://localhost:6337/readyz 90
+      - name: Wait Meili /health
+        run: bash scripts/wait-for-http.sh http://localhost:7702/health 60
+      - name: Cortex /health (optional)
+        run: bash scripts/wait-for-http.sh http://localhost:8100/health 60 || true
+      - name: Logs (on failure)
+        if: failure()
+        run: docker compose logs --tail=200

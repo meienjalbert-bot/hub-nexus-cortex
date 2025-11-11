@@ -1,0 +1,14 @@
+---
+name: Bug report
+description: Signaler un bug
+title: "[Bug] : "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: "Que s'est-il passé ?"
+      description: Décris le problème et les étapes pour le reproduire.
+      placeholder: "Étapes, logs, captures..."
+    validations:
+      required: true

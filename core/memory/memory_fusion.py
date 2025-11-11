@@ -1,4 +1,5 @@
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
 
 def normalize_scores(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     if not items:
@@ -11,7 +12,10 @@ def normalize_scores(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         out.append(j)
     return out
 
-def rrf_merge(buckets: Dict[str, List[Dict[str, Any]]], k: int = 60) -> List[Dict[str, Any]]:
+
+def rrf_merge(
+    buckets: Dict[str, List[Dict[str, Any]]], k: int = 60
+) -> List[Dict[str, Any]]:
     agg = {}
     for expert, results in buckets.items():
         for rank, item in enumerate(results, start=1):
@@ -29,6 +33,7 @@ def rrf_merge(buckets: Dict[str, List[Dict[str, Any]]], k: int = 60) -> List[Dic
         merged.append(it)
     merged.sort(key=lambda x: x["fusion_score"], reverse=True)
     return merged
+
 
 def dedup(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     seen = set()

@@ -1,0 +1,6 @@
+# Routes les revues automatiquement
+*                       @medy-enjalbert
+/api/**                 @medy-enjalbert
+/apps/**                @medy-enjalbert
+/core/**                @medy-enjalbert
+/docker-compose.yml     @medy-enjalbert

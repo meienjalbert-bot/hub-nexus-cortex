@@ -1,0 +1,4 @@
+extends: default
+ignore: |
+  .github/workflows/*.yml
+  .github/ISSUE_TEMPLATE/*.yml

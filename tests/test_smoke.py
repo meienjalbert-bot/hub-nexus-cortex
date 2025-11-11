@@ -1,5 +1,7 @@
-from apps.orchestrator.main import app
 from fastapi.testclient import TestClient
+
+from apps.orchestrator.main import app
+
 
 def test_health():
     c = TestClient(app)

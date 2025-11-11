@@ -1,0 +1,12 @@
+---
+name: Feature request
+description: Proposer une amélioration
+labels: [enhancement]
+body:
+  - type: textarea
+    id: value
+    attributes: {label: Valeur/Impact, placeholder: Pourquoi c'est utile ?}
+    validations: {required: true}
+  - type: textarea
+    id: scope
+    attributes: {label: Portée, placeholder: Ce que ça inclut / n'inclut pas}

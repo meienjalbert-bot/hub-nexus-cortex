@@ -1,0 +1,7 @@
+include_ext: [".md", ".markdown", ".txt", ".pdf"]
+chunk_chars: 2000
+overlap: 200
+qdrant_collection: ${QDRANT_COLLECTION:-nexus_docs}
+meili_index: ${MEILI_INDEX:-docs}
+metadata:
+  source_prefix: "file://"

@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+httpx
+prometheus-client
+redis
+sentence-transformers
+numpy

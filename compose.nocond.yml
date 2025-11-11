@@ -1,0 +1,6 @@
+services:
+  cortex:
+    depends_on:
+      - meili
+      - qdrant
+      - ollama

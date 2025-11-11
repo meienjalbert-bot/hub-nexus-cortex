@@ -1,0 +1,20 @@
+# configs/glossary.yaml
+terms:
+  MoME:
+    name: MoME
+    full: Mixture of Memory Experts
+    definition: >
+      Dans CE projet, MoME = fusion de 4 axes de recherche pour le RAG :
+      (1) lexical (MeiliSearch), (2) sémantique (Qdrant), (3) temporel (récence),
+      (4) graphe (Neo4j), combinés via RRF.
+    required_keywords: ["lexical", "sémantique", "temporel", "graphe", "RRF"]
+
+  RAG:
+    name: RAG
+    full: Retrieval-Augmented Generation
+    definition: >
+      Pipeline recherche+génération. On récupère des passages pertinents
+      (Meili/Qdrant/temporal/graph) puis on génère la réponse en citant le contexte.
+
+notes:
+  constraints: "Réponds en français, concis, et n'invente pas d'acronymes."

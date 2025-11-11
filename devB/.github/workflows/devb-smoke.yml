@@ -1,0 +1,21 @@
+name: devb-smoke
+on:
+  push:
+    paths:
+      - 'scripts/**'
+      - 'core/**'
+      - 'configs/**'
+      - '.github/workflows/devb-smoke.yml'
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint file presence
+        run: |
+          test -f scripts/ingest.py
+          test -f scripts/query.py
+          test -f core/memory/memory_fusion.py
+          test -f core/utils/common.py

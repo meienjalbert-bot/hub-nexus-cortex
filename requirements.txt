@@ -7,7 +7,7 @@ meilisearch==0.37.1
 scikit-learn==1.5.2
 numpy==2.1.2
 pandas==2.2.3
-python-dotenv==1.0.1
+python-dotenv==1.2.1
 prometheus-fastapi-instrumentator==7.0.0
 pyyaml==6.0.2
 redis==5.0.7

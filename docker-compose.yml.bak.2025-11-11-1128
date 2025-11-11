@@ -1,0 +1,114 @@
+---
+# yamllint disable rule:line-length rule:commas rule:comments-indentation rule:empty-lines
+name: hub-nexus-cortex
+# version: "3.9"  # (facultatif avec la spec moderne)
+
+networks:
+  nexus:
+    external: true
+    name: nexus
+
+volumes:
+  meili_data: {}
+  qdrant_data: {}
+  ollama_models: {}
+
+services:
+  meili:
+    image: getmeili/meilisearch:v1.11
+    restart: unless-stopped
+    networks: [nexus]
+    environment:
+      MEILI_NO_ANALYTICS: "true"
+      MEILI_ENV: development
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-meili_key}
+    volumes:
+      - meili_data:/meili_data
+    healthcheck:
+      test: ["CMD","curl","-fsS","http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    # ↓ Décommente si tu veux l'exposer côté hôte
+    # ports: ["7700:7700"]
+
+  qdrant:
+    image: qdrant/qdrant:v1.11.0
+    restart: unless-stopped
+    networks: [nexus]
+    volumes:
+      - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD","curl","-fsS","http://localhost:6333/readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    # ports: ["6333:6333","6334:6334"]  # (optionnel pour tests hôte)
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks: [nexus]
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD","redis-cli","ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    # ports: ["6379:6379"]  # (optionnel)
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    networks: [nexus]
+    ports: ["11434:11434"]        # utile pour tester depuis l’hôte
+    environment:
+      OLLAMA_KEEP_ALIVE: 5m
+      OLLAMA_NUM_PARALLEL: "1"    # CPU-only sécurisé (évite le thrash 32B)
+      OLLAMA_HOST: 0.0.0.0
+    volumes:
+      - ollama_models:/root/.ollama
+      - /srv/models-big:/models:ro
+    healthcheck:
+      test: ["CMD","curl","-fsS","http://localhost:11434/api/tags"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  cortex:
+    build:
+      context: .
+      dockerfile: apps/orchestrator/Dockerfile
+    image: marland/cortex:devA
+    restart: unless-stopped
+    networks: [nexus]
+    ports: ["8100:8100"]
+    environment:
+      PORT: ${PORT:-8100}
+      MEILI_HOST: http://meili:7700
+      QDRANT_HOST: http://qdrant:6333
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
+      OLLAMA_DEFAULT_MODEL: ${OLLAMA_DEFAULT_MODEL:-qwen2.5-vl-7b-instruct:q4_k_m}
+      OLLAMA_SAGE_MODEL: ${OLLAMA_SAGE_MODEL:-qwen2.5-32b-instruct:q4_k_m}
+      ENABLE_SEMANTIC_CACHE: "1"
+      - LOUMINA_DB=/data/loumina.db
+      - OLLAMA_BASE_URL=http://ollama:11434   # utile si tu branches un LLM
+    volumes:
+      - ./data/loumina:/data
+    depends_on:
+      - meili
+      - qdrant
+      - ollama
+      - redis
+    healthcheck:
+      test: ["CMD","curl","-fsS","http://localhost:8100/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
